@@ -17,8 +17,8 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras.models import Sequential # type: ignore
-from tensorflow.keras.layers import Dense, Input # type: ignore
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Input
 from functools import wraps
 from abc import ABC, abstractmethod
 import unittest
@@ -89,7 +89,7 @@ class OptionPricer:
         S = float(S)
         dt = T - t
         if dt <= 0:
-            # Advanced conditional: if time is expired, payoff is max(S-K,0)
+            # Conditional: if time is expired, payoff is max(S-K,0)
             return max(S - K, 0)
         d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * dt) / (sigma * math.sqrt(dt))
         d2 = d1 - sigma * math.sqrt(dt)
@@ -138,7 +138,7 @@ class GBMSimulator:
     def simulate_path(self):
         path = [self.S0]
         for _ in range(1, self.steps + 1):
-            # Use an advanced conditional with ternary operator (for demonstration)
+            # Use a conditional with ternary operator (for demonstration)
             noise = random.gauss(0, 1)
             drift = (self.r - 0.5 * self.sigma**2) * self.dt
             diffusion = self.sigma * math.sqrt(self.dt) * noise
@@ -244,7 +244,7 @@ class OptionReplicationSimulator:
         for i in range(len(self.gbm_path) - 1):
             t_i = i * self.dt
             call_value = OptionPricer.calculate_call_price(self.gbm_path[i], self.strike, self.T, t_i, self.r, self.sigma)
-            # Advanced conditional: use inline if-else to initialize first iteration
+            # Conditional: use inline if-else to initialize first iteration
             if i == 0:
                 delta_value = OptionPricer.calculate_delta(self.gbm_path[i], self.strike, self.T, t_i, self.r, self.sigma)
                 bond_alloc = (call_value - delta_value * self.gbm_path[i]) / self.bond_values[i]
@@ -285,16 +285,12 @@ class ActionSpace:
     
     def seed(self, seed_val):
         random.seed(seed_val)
-    
-    def sample(self):
-        # For demonstration, advanced conditional: return a random float between 0 and 1
-        return random.random() if self.n == 1 else [random.random() for _ in range(self.n)]
 
 
 @memory_tracker
 class HedgeSimEnv:
     """
-    An advanced simulation environment for option hedging.
+    A simulation environment for option hedging.
     """
     def __init__(self, S0, strike_options, T, rate_options, vol_options, steps):
         self.initial_price = S0
@@ -318,7 +314,7 @@ class HedgeSimEnv:
     @log_execution
     def generate_simulation_data(self):
         prices = [self.initial_price]
-        # Randomly select parameters using advanced conditional statements
+        # Randomly select parameters using conditional statements
         self.strike = random.choice(list(self.strike_options))
         self.rate = random.choice(list(self.rate_options))
         self.volatility = random.choice(list(self.vol_options))
@@ -336,7 +332,7 @@ class HedgeSimEnv:
         current_price = self.sim_data['Price'].iloc[self.current_step]
         current_bond = self.sim_data['Bond'].iloc[self.current_step]
         time_remaining = self.maturity - self.current_step * self.dt
-        # Use advanced conditional: if time remaining > 0, price the call; else, exercise payoff
+        # Use conditional: if time remaining > 0, price the call; else, exercise payoff
         call_price = (OptionPricer.calculate_call_price(current_price, self.strike, self.maturity,
                                                           self.current_step * self.dt, self.rate, self.volatility)
                       if time_remaining > 0 else max(current_price - self.strike, 0))
@@ -362,7 +358,7 @@ class HedgeSimEnv:
 
     @log_execution
     def step(self, action):
-        # Advanced conditional logic based on step count
+        #  conditional logic based on step count
         if self.current_step == 0:
             reward = 0.0
             self.current_step += 1
@@ -480,7 +476,7 @@ class HedgeDQNAgent(BaseDQNAgent):
         return action_val
 
     def act(self, state):
-        # Advanced conditional: epsilon-greedy policy using ternary operator
+        #  conditional: epsilon-greedy policy using ternary operator
         return self.env.action_space.sample() if random.random() <= self.epsilon else self.optimize_action(state)
 
     def replay(self):
@@ -518,7 +514,6 @@ class HedgeDQNAgent(BaseDQNAgent):
 class TestOptionPricer(unittest.TestCase):
     def test_call_price(self):
         price = OptionPricer.calculate_call_price(100, 100, 1.0, 0.0, 0.04, 0.2)
-        # Allow a small tolerance in the computed value
         self.assertAlmostEqual(price, 10.4506, places=2)
     
     def test_delta(self):
