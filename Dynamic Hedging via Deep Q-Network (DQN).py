@@ -1,6 +1,5 @@
 """
 Dynamic Hedging via Deep Q-Network (DQN)
---------------------------------------------------------------------------------
 It simulates asset dynamics with GBM, price options
 using the Black-Scholes-Merton model, replicate options via hedging, and train a Deep Q-Network agent.
 """
